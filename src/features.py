@@ -12,41 +12,42 @@ import matplotlib.pyplot as plt
 #--------------------------------------------------------------------
 
 ### define functions for testing different transformations
-def log_trans(df, column):
-    df[f'{column}_log'] = np.log1p(df[column])
+def log_trans(df, columns):
+    for features in columns:
+        df[f'{features}_log'] = np.log1p(df[features])
     return df
 
-def sqrt_trans(df, column):
-    df[f'{column}_sqrt'] = np.sqrt(df[column])
+def sqrt_trans(df, columns):
+    for features in columns:
+        df[f'{features}_sqrt'] = np.sqrt(df[features])
     return df
 
-def cbrt_trans(df, column):
-    df[f'{column}_cbrt'] = np.cbrt(df[column])
+def cbrt_trans(df, columns):
+    for features in columns:
+        df[f'{features}_cbrt'] = np.cbrt(df[features])
     return df
 
 #--------------------------------------------------------------------
 # apply non-linear transformation to the numeric features
 #--------------------------------------------------------------------
-### monthly income, years at company, total working hours and distance from home are very right scewed we want to normailizat this so that it looks more like a bell shaped curve
-log_trans(HR_df, ['MonthlyIncome, YearsAtCompany', 'TotalWOrking']'MonthlyIncome')
-
-HR_df_log = HR_df.copy()
-HR_df_log['MonthlyIncome_log'] = np.log1p(HR_df['MonthlyIncome'])
-HR_df_log['YearsAtCompany_log'] = np.log1p(HR_df['YearsAtCompany'])
-HR_df_log['TotalWorkingHours_log'] = np.log1p(HR_df['TotalWorkingYears'])
-HR_df_log['DistanceFromHome_log'] = np.log1p(HR_df['DistanceFromHome'])
+### monthly income, years at company, total working hours and distance from home are very right scewed we want to normalize this so that it looks more like a bell shaped curve
+### attempt log transformation
+HR_df_log = log_trans(HR_df, ['MonthlyIncome', 'YearsAtCompany', 'TotalWorkingYears', 'DistanceFromHome'])
 HR_df_log.to_pickle("../../HR_Analytics/data/interim/HR_df_log.pkl")
 
-### Distance from home_log and Years at company_log didnt produce a bell shaped curve, try sqrt transformation on those features
-HR_df_log_sqrt = HR_df_log.copy().drop(columns=['DistanceFromHome_log', 'YearsAtCompany_log'])
-HR_df_log_sqrt['DistanceFromHome_cbrt'] = np.cbrt(HR_df_log['DistanceFromHome_log'])
-HR_df_log_sqrt['YearsAtCompany_sqrt'] = np.sqrt(HR_df_log['YearsAtCompany_log'])
+### Distance from home_log and Years at company_log didnt produce a bell shaped curve
+### attempt sqrt transformation
+HR_df_log_sqrt = HR_df_log.copy().drop(columns=['DistanceFromHome_log', 'YearsAtCompany_log'], errors='ignore')
+HR_df_log_sqrt = sqrt_trans(HR_df_log_sqrt, ['DistanceFromHome', 'YearsAtCompany'])
 HR_df_log_sqrt.to_pickle("../../HR_Analytics/data/interim/HR_df_log_sqrt.pkl")
 
 ### SQRT transformation not working for distance from home, CBRT transformation works better
+HR_df_log_sqrt_crbt = HR_df_log_sqrt.copy().drop(columns=['DistanceFromHome_sqrt'], errors='ignore')
+HR_df_log_sqrt_crbt = cbrt_trans(HR_df_log_sqrt_crbt, ['DistanceFromHome'])
+HR_df_log_sqrt_crbt.to_pickle("../../HR_Analytics/data/interim/HR_df_log_sqrt_crbt.pkl")
 
 ### Drop the original features that were transformed
-HR_df_transformed = HR_df_log_sqrt.copy().drop(columns=['MonthlyIncome', 'YearsAtCompany', "TotalWorkingYears", 'DistanceFromHome'])
+HR_df_transformed = HR_df_log_sqrt_crbt.copy().drop(columns=['MonthlyIncome', 'YearsAtCompany', "TotalWorkingYears", 'DistanceFromHome'])
 HR_df_transformed.to_pickle("../../HR_Analytics/data/interim/HR_df_transformed.pkl")
 #--------------------------------------------------------------------
 # Scale/Normalize the numeric features
@@ -71,7 +72,7 @@ features_to_scale = [
     "YearsSinceLastPromotion",
     "YearsWithCurrManager",
     "MonthlyIncome_log",
-    "TotalWorkingHours_log",
+    "TotalWorkingYears_log",
     "DistanceFromHome_cbrt",
     "YearsAtCompany_sqrt"
 ]
@@ -103,3 +104,12 @@ One_hot_encoded_columns = [
 HR_df_encoded_transformed_scaled = pd.get_dummies(HR_df_transformed_scaled, columns=One_hot_encoded_columns, drop_first=True)   
 HR_df_encoded_transformed_scaled.to_pickle("../../HR_Analytics/data/processed/HR_df_encoded_transformed_scaled.pkl")
 
+#--------------------------------------------------------------------
+# Upsampling miniority class (oversampling)
+#--------------------------------------------------------------------
+HR_df.query("Attrition == 'Yes'").shape[0] # number of employees who left the company
+HR_df.query("Attrition == 'No'").shape[0] # number of employees who stayed  
+
+### Minority class inbalanced, we will upsample the minority class (Attrition = 1) to balance the dataset
+
+HR_df_upsampled 
