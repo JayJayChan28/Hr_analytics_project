@@ -34,9 +34,6 @@ print(classification_report(y_test, y_pred_random_forest))
 ### when increasing the number of estimators, model became worse, suspect that it learned the majority class too well due to class imbalance
 ### best recall I could get is 0.08 for Attrition = 1, which is not good enough
 
-
 #--------------------------------------------------------------------
-# XGBoost Predict script
-#--------------------------------------------------------------------
-
-
+# Logistic regression Predict script two 
+#--------------------------1------------------------------------------

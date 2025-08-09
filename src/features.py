@@ -5,7 +5,7 @@ import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plt
 
-
+HR_df = pd.read_pickle("../../HR_Analytics/data/interim/HR_df.pkl")
 
 #--------------------------------------------------------------------
 # Preprocessing the HR dataset
@@ -104,12 +104,3 @@ One_hot_encoded_columns = [
 HR_df_encoded_transformed_scaled = pd.get_dummies(HR_df_transformed_scaled, columns=One_hot_encoded_columns, drop_first=True)   
 HR_df_encoded_transformed_scaled.to_pickle("../../HR_Analytics/data/processed/HR_df_encoded_transformed_scaled.pkl")
 
-#--------------------------------------------------------------------
-# Upsampling miniority class (oversampling)
-#--------------------------------------------------------------------
-HR_df.query("Attrition == 'Yes'").shape[0] # number of employees who left the company
-HR_df.query("Attrition == 'No'").shape[0] # number of employees who stayed  
-
-### Minority class inbalanced, we will upsample the minority class (Attrition = 1) to balance the dataset
-
-HR_df_upsampled 
