@@ -52,8 +52,12 @@ plt.show()
 # looks like average DailyRate is lower for employees who left the company (Attrition = 1) compared to those who stayed (Attrition = 0)
 
 
-# correlation heatmap
+# piechart for Attrition
 
 
 
-
+attrition_counts = HR_df['Attrition'].value_counts()
+plt.figure(figsize=(6, 6))
+plt.pie(attrition_counts, labels=attrition_counts.index, autopct='%1.1f%%', startangle=90, colors=['skyblue', 'lightcoral'])
+plt.title('Attrition vs Non-Attrition')
+plt.show()

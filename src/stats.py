@@ -39,8 +39,10 @@ model = fit_logistic_model(HR_df_encoded_transformed_scaled, 'Attrition_Yes')
 print(model.summary())
 #now we select the features with p-values less than 0.05 to identify significant predictors
 for feature, pvalue in model.pvalues.sort_values(ascending=True).items():
+    selected_features = []
     if pvalue < 0.05:  # significance level
         print(f"Feature: {feature}, P-Value: {pvalue}")
+        selected_features.append(feature)
 
 selected_features = [
     "OverTime_Yes",
