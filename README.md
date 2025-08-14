@@ -95,5 +95,6 @@ This structure ensures clarity, reproducibility, and ease of collaboration for d
 
 ## Results
 
-- **Best Model:** Logistic Regression (high recall, interpretable, no overfitting)
-- **Business Value:** Enables HR teams to proactively identify and retain at-risk employees.
+- **Logistic Regression** was selected as the best model due to its high recall and balanced performance on both training and test sets. This means it reliably identifies most employees at risk of leaving, which is crucial for HR intervention.
+- **Random Forest** showed signs of overfitting: it performed very well on the training data but much worse on the test data, making it less reliable for real-world predictions. However, Random Forest can be considered if the goal is to maximize precision (correctly identifying true attrition cases), though this comes at the expense of lower recall (missing more actual attrition cases).
+- **Business Value:** The chosen model helps HR teams proactively identify and retain at-risk employees, with a focus on minimizing missed attrition cases (high recall) while maintaining interpretability and generalizability.
